@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HydroServer 40-Minute Workshop Slides</title>
+  <style>
+    :root {
+      --ink: #12313f;
+      --muted: #526773;
+      --water: #0077a3;
+      --river: #15a6a6;
+      --cloud: #f3f8fb;
+      --line: #c9dce6;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    .deck {
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .slide {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6vh 7vw;
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .slide:nth-child(even) {
+      background: #f7fbfd;
+    }
+
+    .content {
+      width: min(1100px, 100%);
+    }
+
+    .title-layout {
+      display: grid;
+      grid-template-columns: minmax(180px, 280px) 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 100%;
+      max-width: 260px;
+      height: auto;
+    }
+
+    .eyebrow {
+      color: var(--water);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin: 0 0 14px;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 5.6rem);
+    }
+
+    h2 {
+      font-size: clamp(2.1rem, 4.5vw, 4.4rem);
+      margin-bottom: 28px;
+    }
+
+    p {
+      max-width: 900px;
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      color: var(--muted);
+      margin: 24px 0 0;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.25em;
+      max-width: 940px;
+    }
+
+    li {
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      margin: 0 0 18px;
+    }
+
+    strong {
+      color: var(--water);
+    }
+
+    .pill {
+      display: inline-block;
+      border: 2px solid var(--river);
+      border-radius: 999px;
+      color: var(--water);
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      margin-bottom: 22px;
+    }
+
+    .footer {
+      margin-top: 42px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    @media (max-width: 760px) {
+      .slide {
+        padding: 48px 24px;
+      }
+
+      .title-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .logo {
+        max-width: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide">
+      <div class="content title-layout">
+        <img class="logo" src="../imgs/hydroserver_logo.png" alt="HydroServer logo">
+        <div>
+          <p class="eyebrow">40-minute hands-on workshop</p>
+          <h1>HydroServer in 40 Minutes</h1>
+          <p>Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and Meteorological Data Systems for Multi-Hazard Early Warning Systems</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Context</span>
+        <h2>Why This Matters</h2>
+        <ul>
+          <li>Early warning systems depend on trusted hydrologic and meteorological time series.</li>
+          <li>Forecast workflows need observations, metadata, units, and timestamps to line up.</li>
+          <li>Open and interoperable systems reduce manual reconciliation during high-pressure events.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">HydroServer</span>
+        <h2>What HydroServer Provides</h2>
+        <ul>
+          <li>A place to publish and discover hydrometeorological time-series data.</li>
+          <li>Shared metadata for sites, variables, units, sensors, processing levels, and datastreams.</li>
+          <li>Programmatic access through APIs and Python workflows.</li>
+          <li>A practical path from field or model data to reusable early-warning information.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">HydroServerPy</span>
+        <h2>HydroServerPy Management Pattern</h2>
+        <ul>
+          <li>Connect once with <strong>HydroServer(...)</strong>.</li>
+          <li>Use resource properties such as workspaces, things, datastreams, sensors, units, observed properties, data connections, and tasks.</li>
+          <li>Read collections with <strong>list(...)</strong> and access records with <strong>.items</strong>.</li>
+          <li>Use pagination, ordering, filtering, and <strong>fetch_all=True</strong> for larger collections.</li>
+          <li>Retrieve one object with <strong>get(uid=...)</strong>.</li>
+          <li>Create resources with <strong>create(...)</strong> when authenticated and authorized.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Concepts</span>
+        <h2>HydroServer Data Model in Hydrology Terms</h2>
+        <ul>
+          <li><strong>Thing:</strong> gauge, station, watershed outlet, forecast point, or monitored location.</li>
+          <li><strong>Observed property:</strong> streamflow, rainfall, water level, temperature, or forecast value.</li>
+          <li><strong>Sensor:</strong> instrument, model, data source, or processing workflow.</li>
+          <li><strong>Unit:</strong> m3/s, mm, m, degC, or another standard measurement unit.</li>
+          <li><strong>Datastream:</strong> the time series connecting location, variable, method, unit, and observations.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Setup</span>
+        <h2>Workspace and Connection</h2>
+        <ul>
+          <li>Workshop workspace: <strong>hydroserver_uganda_demo</strong>.</li>
+          <li>Anonymous mode is limited to public reads and local examples.</li>
+          <li>Use an API key when the facilitator has prepared one for the demo.</li>
+          <li>Use an API key when the facilitator wants authenticated access.</li>
+          <li>Find and reuse the already-created workspace before loading or publishing data.</li>
+          <li>Create the workspace programmatically only when the facilitator enables that optional fallback.</li>
+          <li>Optionally create a workspace API key programmatically after authenticated setup.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Notebook Workflow</span>
+        <h2>Notebook Workflow</h2>
+        <ol>
+          <li>Configure the workspace and connection method.</li>
+          <li>Connect to a HydroServer instance.</li>
+          <li>Reuse the already-created demo workspace when authenticated.</li>
+          <li>Explore HydroServerPy list, get, create, pagination, ordering, and filtering patterns.</li>
+          <li>Inspect sites, datastreams, observed properties, units, data connections, tasks, and task runs.</li>
+          <li>Prepare a small streamflow observation table.</li>
+          <li>Convert local timestamp/value columns into HydroServerPy phenomenon_time/result columns.</li>
+          <li>Check timestamps, missing values, units, and suspicious values.</li>
+          <li>Visualize the hydrograph.</li>
+          <li>Demonstrate a safe loading payload.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Optional Reference</span>
+        <h2>Optional Reference Layer</h2>
+        <ul>
+          <li>Resource-by-resource HydroServerPy examples stay in the notebook for follow-up learning.</li>
+          <li>hydroserverpy.etl examples show extractors, transformers, loaders, mappings, operations, and debugging.</li>
+          <li>HydroServerQualityControl examples show authenticated observation QC and gap detection.</li>
+          <li>These sections are optional during the live 40-minute workshop.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Quality Control</span>
+        <h2>Quality Control and Forecast Readiness</h2>
+        <ul>
+          <li>Are timestamps parseable and in the expected order?</li>
+          <li>Are values missing at critical times?</li>
+          <li>Are units consistent across the table?</li>
+          <li>Do spikes or impossible values need review before warning workflows use the data?</li>
+          <li>HydroServer-backed QC can use <strong>HydroServerQualityControl.find_gaps(...)</strong> when a prepared datastream is available.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Live Write Safety</span>
+        <h2>Safe Live Demonstration</h2>
+        <ul>
+          <li>Anonymous read access is the default path for participants.</li>
+          <li>Finding the demo workspace uses API key authentication.</li>
+          <li>Workspace creation is optional and facilitator controlled.</li>
+          <li>API key creation is facilitator-only and requires an authenticated workspace.</li>
+          <li>The notebook uses local CSV data when credentials or network access are not available.</li>
+          <li>Posting observations is optional and facilitator controlled.</li>
+          <li>Live writes should only target a prepared demo datastream.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Optional</span>
+        <h2>Forecast Extension</h2>
+        <ul>
+          <li>Forecast output can be reshaped into the same timestamp and value pattern.</li>
+          <li>Validation workflows compare forecast time series with observed data.</li>
+          <li>HydroServer can help make those inputs and outputs discoverable and reusable.</li>
+          <li>The optional notebook section gives advanced participants a starting point.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Outcome</span>
+        <h2>What Participants Should Leave With</h2>
+        <ul>
+          <li>A mental model of how HydroServer stores hydrometeorological time series.</li>
+          <li>A runnable notebook for connecting, checking, plotting, and preparing data.</li>
+          <li>A safer way to discuss operational data sharing for multi-hazard early warning.</li>
+          <li>Pointers for extending the workflow into forecast validation.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content title-layout">
+        <img class="logo" src="../imgs/hydroserver_logo.png" alt="HydroServer logo">
+        <div>
+          <span class="pill">Next Steps</span>
+          <h2>Run the Notebook</h2>
+          <ul>
+            <li>Run the notebook cells in order.</li>
+            <li>Change only the marked configuration values.</li>
+            <li>Keep live writes disabled unless credentials and a demo datastream are provided.</li>
+            <li>Continue with HydroServer documentation and the optional forecast extension after the session.</li>
+          </ul>
+          <div class="footer">Use arrow keys, Page Down, or scroll to move through the deck.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

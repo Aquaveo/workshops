@@ -1,0 +1,9 @@
+timestamp,forecast_issue_time,lead_time_hours,value,unit,site,observed_property
+2026-04-01T00:00:00Z,2026-03-31T18:00:00Z,6,41.5,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-01T06:00:00Z,2026-03-31T18:00:00Z,12,49.0,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-01T12:00:00Z,2026-03-31T18:00:00Z,18,58.4,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-01T18:00:00Z,2026-03-31T18:00:00Z,24,64.8,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-02T00:00:00Z,2026-03-31T18:00:00Z,30,70.2,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-02T06:00:00Z,2026-03-31T18:00:00Z,36,76.5,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-02T12:00:00Z,2026-03-31T18:00:00Z,42,71.9,m3/s,Demo Forecast Point,streamflow_forecast
+2026-04-02T18:00:00Z,2026-03-31T18:00:00Z,48,62.3,m3/s,Demo Forecast Point,streamflow_forecast

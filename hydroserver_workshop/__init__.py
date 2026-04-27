@@ -1,0 +1,1 @@
+"""HydroServer workshop assets."""
