@@ -10,8 +10,12 @@ Path: `hydroserver_workshop/`
 
 This workshop introduces HydroServer and HydroServerPy for managing hydrologic and meteorological time series data. It includes:
 
-- a Jupyter notebook for the live session
+- four Jupyter notebooks for metadata, bulk loading, ETL, and quality control
 - bundled sample streamflow and forecast CSV files
+- real Uganda Hydroweb station metadata and per-station water-level CSV files
+- support for matching future two-column GEOGLOWS station CSV files
+- a bulk station loader that creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station
+- an HTTP-only GEOGLOWS forecast ETL example for the Aroca River point
 - a companion slide deck
 - validation scripts and tests
 - optional authenticated HydroServer write examples
@@ -35,8 +39,25 @@ From the repository root:
 ```bash
 cd hydroserver_workshop
 python -m pip install -r requirements.txt
-jupyter notebook notebooks/01_hydroserver_30_min_workshop.ipynb
+jupyter notebook notebooks/
 ```
+
+## Google Colab
+
+The notebooks resolve data paths for both local Jupyter and Google Colab. In Colab, use one of these layouts:
+
+- upload the full `hydroserver_workshop/` folder under `/content`
+- upload the `data/` folder beside the notebook under `/content/data`
+- mount Google Drive and set `DATA_DIR_OVERRIDE` in the notebook to the mounted data folder
+
+The expected station data folders are:
+
+```text
+hydroserver_workshop/data/hydroweb/
+hydroserver_workshop/data/geoglows/
+```
+
+Hydroweb files are named by station ID, such as `H-104255.csv`, with `Datetime` and `Water Level (m)` columns. GEOGLOWS files should be one two-column CSV per station: timestamp/date and streamflow value.
 
 ## Validate Workshop Assets
 
@@ -48,4 +69,4 @@ pytest tests/test_workshop_assets.py
 
 ## Notes
 
-The HydroServer notebook is safe by default: anonymous read mode is enabled, API keys are not stored in the notebook, and write/delete operations require explicit facilitator configuration.
+The HydroServer notebooks are safe by default: anonymous read mode is enabled, API keys are not stored in notebooks, and cleanup/delete operations require explicit facilitator configuration.

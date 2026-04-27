@@ -52,29 +52,24 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 - Use an API key when the facilitator wants authenticated access.
 - Find and reuse the already-created workspace before loading or publishing data.
 - Create the workspace programmatically only when the facilitator enables that optional fallback.
-- Optionally create a workspace API key programmatically after authenticated setup.
 
 ---
 
 ## Notebook Workflow
 
-1. Configure the workspace and connection method.
-2. Connect to a HydroServer instance.
-3. Reuse the already-created demo workspace when authenticated.
-4. Explore HydroServerPy `list`, `get`, `create`, pagination, ordering, and filtering patterns.
-5. Inspect sites, datastreams, observed properties, units, data connections, tasks, and task runs.
-6. Prepare a small streamflow observation table.
-7. Convert local `timestamp`/`value` columns into HydroServerPy `phenomenon_time`/`result` columns.
-8. Check timestamps, missing values, units, and suspicious values.
-9. Visualize the hydrograph.
-10. Demonstrate a safe loading payload.
+1. Notebook 1: create things and required metadata.
+2. Notebook 2: bulk station load with `COMID_v1` Hydroweb and `COMID_v2` GEOGLOWS files.
+3. Notebook 3: short GEOGLOWS `HTTPExtractor` ETL example.
+4. Notebook 4: short quality-control workflow.
+5. Each notebook starts with setup and creation controls.
+6. Each notebook ends with cleanup for disposable resources.
 
 ---
 
 ## Optional Reference Layer
 
-- Resource-by-resource HydroServerPy examples stay in the notebook for follow-up learning.
-- `hydroserverpy.etl` examples show extractors, transformers, loaders, mappings, operations, and debugging.
+- Resource-by-resource HydroServerPy examples are split into focused notebooks for follow-up learning.
+- `hydroserverpy.etl` shows an HTTPExtractor forecast example for the Aroca River GEOGLOWS point `160180844`.
 - `HydroServerQualityControl` examples show authenticated observation QC and gap detection.
 - These sections are optional during the live 40-minute workshop.
 
@@ -86,6 +81,7 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 - Are values missing at critical times?
 - Are units consistent across the table?
 - Do spikes or impossible values need review before warning workflows use the data?
+- Real Uganda station data makes these checks concrete: Hydroweb water level and GEOGLOWS streamflow when the two-column files are present.
 - HydroServer-backed QC can use `HydroServerQualityControl.find_gaps(...)` when a prepared datastream is available.
 
 ---
@@ -95,10 +91,11 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 - Anonymous read access is the default path for participants.
 - Finding the demo workspace uses API key authentication.
 - Workspace creation is optional and facilitator controlled.
-- API key creation is facilitator-only and requires an authenticated workspace.
-- The notebook uses local CSV data when credentials or network access are not available.
+- The notebooks use local CSV data when credentials or network access are not available.
+- In Google Colab, upload `data/` under `/content` or set `DATA_DIR_OVERRIDE`.
 - Posting observations is optional and facilitator controlled.
-- Live writes should only target a prepared demo datastream.
+- Bulk station load creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station.
+- Live writes should only target disposable demo resources.
 
 ---
 
@@ -107,7 +104,7 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 - Forecast output can be reshaped into the same timestamp and value pattern.
 - Validation workflows compare forecast time series with observed data.
 - HydroServer can help make those inputs and outputs discoverable and reusable.
-- The optional notebook section gives advanced participants a starting point.
+- The optional notebook section uses `HTTPExtractor` with `https://geoglows.ecmwf.int/api` for Aroca River forecast ID `160180844`.
 
 ---
 
@@ -122,7 +119,8 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 
 ## Next Steps
 
-- Run the notebook cells in order.
+- Run each notebook's cells in order.
 - Change only the marked configuration values.
-- Keep live writes disabled unless the facilitator provides credentials and a demo datastream.
+- Start with `01_things_and_metadata.ipynb`, then move through the numbered notebooks.
+- Keep live writes disabled unless the facilitator provides credentials and a disposable demo workspace.
 - Continue with HydroServer documentation and the optional forecast extension after the session.
