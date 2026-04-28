@@ -11,38 +11,30 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 
 EXPECTED_NOTEBOOKS = [
-    ROOT / "notebooks" / "01_things_and_metadata.ipynb",
-    ROOT / "notebooks" / "02_bulk_loading_demo.ipynb",
-    ROOT / "notebooks" / "03_etl_demo.ipynb",
-    ROOT / "notebooks" / "04_quality_control_demo.ipynb",
+    ROOT / "notebooks" / "quick_demo_data.ipynb",
 ]
 
 EXPECTED_FILES = [
     ROOT / "README.md",
     ROOT / "requirements.txt",
-    ROOT / "data" / "sample_streamflow_observations.csv",
-    ROOT / "data" / "sample_forecast_timeseries.csv",
-    ROOT / "data" / "subset" / "stations.csv",
-    ROOT / "data" / "subset" / "Uganda_Hydroweb_subset.csv",
-    ROOT / "data" / "subset" / "uganda_selected_station.csv",
+    ROOT / "data" / "Uganda_Hydroweb_subset.csv",
     ROOT / "imgs" / "hydroserver_logo.png",
     ROOT / "presentation" / "hydroserver_30_min_workshop_slides.md",
     ROOT / "presentation" / "hydroserver_30_min_workshop_slides.html",
 ] + EXPECTED_NOTEBOOKS
 
 EXPECTED_DIRECTORIES = [
-    ROOT / "data" / "subset" / "hydroweb",
-    ROOT / "data" / "subset" / "geoglows",
+    ROOT / "data" / "hydroweb",
+    ROOT / "data" / "geoglows",
 ]
 
 REQUIRED_NOTEBOOK_PHRASES = [
-    "hydroserver_uganda_demo",
+    "demo1",
     "AUTH_METHOD",
-    "Google Colab",
-    "DATA_DIR",
-    "USE_DATA_SUBSET",
-    "SUBSET_DATA_DIR",
-    "Uganda_Hydroweb.csv",
+    "SELECTED_STATION_CSV",
+    "Uganda_Hydroweb_subset.csv",
+    "/content/sample_data/ts/hydroweb",
+    "/content/sample_data/ts/geoglows",
     "COMID_v1",
     "COMID_v2",
     "hydroweb",
@@ -52,28 +44,16 @@ REQUIRED_NOTEBOOK_PHRASES = [
     "Connect to HydroServer",
     "Find or Optionally Create Demo Workspace",
     "CREATE_WORKSPACE_IF_MISSING",
-    "Track Created Resources",
     "DELETE_CREATED_RESOURCES_AT_END",
-    "Bulk Loading Demo",
     "bulk_station_load_plan",
-    "eligible_stations",
-    "Create Needed Metadata, Things, and Datastreams",
-    "result_qualifier_codes",
-    "HydroServer ETL Demo",
-    "ETLPipeline",
-    "HTTPExtractor",
-    "Aroca River",
-    "160180844",
-    "1.533355",
-    "32.21666",
-    "geoglows.ecmwf.int/api",
-    "CSVTransformer",
-    "ETLDataMapping",
-    "raise_on_error=False",
-    "HydroServer Quality Control Demo",
-    "HydroServerQualityControl",
-    "find_gaps",
-    "include_quality",
+    "loadable_station_plan",
+    "Create Needed Metadata and an Example Thing",
+    "Prepare some Time Series",
+    "Upload observations to HydroServer datastreams",
+    "UPLOAD_MODE",
+    "mode=\"replace\"",
+    "workspace_inventory_dataframe",
+    "upload_summary_df",
     "phenomenon_time",
     "result",
     "Cleanup: Delete Created Resources",
@@ -81,33 +61,24 @@ REQUIRED_NOTEBOOK_PHRASES = [
 
 REQUIRED_NOTEBOOK_TITLES = [
     "01 - HydroServer Things and Metadata",
-    "02 - HydroServer Bulk Loading Demo",
-    "03 - HydroServer ETL Demo",
-    "04 - HydroServer Quality Control Demo",
 ]
 
 REQUIRED_PRESENTATION_PHRASES = [
     "Peer-to-Peer Technical Workshop",
     "HydroServer",
     "40 Minutes",
-    "HydroServerPy Management Pattern",
-    "Optional Reference Layer",
-    "hydroserverpy.etl",
-    "HydroServerQualityControl",
-    "hydroserver_uganda_demo",
+    "quick_demo_data.ipynb",
+    "The Only Notebook Today",
+    "demo1",
     "API key",
     "Anonymous mode is limited",
-    "already-created workspace",
-    "Bulk station load",
-    "Aroca River",
-    "160180844",
-    "HTTPExtractor",
-    "Notebook Workflow",
-    "Quality Control and Forecast Readiness",
+    "password",
+    "Live Workflow",
+    "Input Data",
     "Safe Live Demonstration",
-    "Forecast Extension",
     "../imgs/hydroserver_logo.png",
     "Google Colab",
+    "Uganda_Hydroweb_subset.csv",
     "Hydroweb",
     "GEOGLOWS",
     "COMID_v1",
@@ -129,13 +100,6 @@ def collect_errors() -> list[str]:
         return errors
 
     errors.extend(_validate_subset_files())
-    errors.extend(_validate_csv(ROOT / "data" / "sample_streamflow_observations.csv", {"timestamp", "value"}))
-    errors.extend(
-        _validate_csv(
-            ROOT / "data" / "sample_forecast_timeseries.csv",
-            {"timestamp", "forecast_issue_time", "lead_time_hours", "value"},
-        )
-    )
     errors.extend(_validate_notebooks())
     errors.extend(_validate_presentation())
     return errors
@@ -143,10 +107,10 @@ def collect_errors() -> list[str]:
 
 def _validate_subset_files() -> list[str]:
     errors: list[str] = []
-    subset_dir = ROOT / "data" / "subset"
-    subset_catalog_path = subset_dir / "stations.csv"
-    hydroweb_dir = subset_dir / "hydroweb"
-    geoglows_dir = subset_dir / "geoglows"
+    data_dir = ROOT / "data"
+    subset_catalog_path = data_dir / "Uganda_Hydroweb_subset.csv"
+    hydroweb_dir = data_dir / "hydroweb"
+    geoglows_dir = data_dir / "geoglows"
 
     try:
         subset = pd.read_csv(subset_catalog_path)
@@ -154,7 +118,7 @@ def _validate_subset_files() -> list[str]:
         return [f"Could not read {subset_catalog_path.relative_to(ROOT)}: {exc}"]
 
     if len(subset) != 5:
-        errors.append("data/subset/stations.csv should contain exactly 5 stations")
+        errors.append("data/Uganda_Hydroweb_subset.csv should contain exactly 5 stations")
 
     required_columns = {
         "ID",
@@ -172,20 +136,20 @@ def _validate_subset_files() -> list[str]:
     }
     missing_columns = sorted(required_columns.difference(subset.columns))
     if missing_columns:
-        errors.append(f"data/subset/stations.csv missing columns: {', '.join(missing_columns)}")
+        errors.append(f"data/Uganda_Hydroweb_subset.csv missing columns: {', '.join(missing_columns)}")
         return errors
 
     for _, station in subset.iterrows():
         hydroweb_file = hydroweb_dir / str(station["hydroweb_file"])
         geoglows_file = geoglows_dir / str(station["geoglows_file"])
         if not hydroweb_file.exists():
-            errors.append(f"Missing subset Hydroweb file: {hydroweb_file.relative_to(ROOT)}")
+            errors.append(f"Missing Hydroweb file: {hydroweb_file.relative_to(ROOT)}")
         if not geoglows_file.exists():
-            errors.append(f"Missing subset GEOGLOWS file: {geoglows_file.relative_to(ROOT)}")
+            errors.append(f"Missing GEOGLOWS file: {geoglows_file.relative_to(ROOT)}")
         if pd.isna(station["COMID_v1"]) or int(station["COMID_v1"]) == 0:
-            errors.append(f"Subset station {station['ID']} must have a nonzero COMID_v1")
+            errors.append(f"Station {station['ID']} must have a nonzero COMID_v1")
         if pd.isna(station["COMID_v2"]) or int(station["COMID_v2"]) == 0:
-            errors.append(f"Subset station {station['ID']} must have a nonzero COMID_v2")
+            errors.append(f"Station {station['ID']} must have a nonzero COMID_v2")
 
     for path in sorted(hydroweb_dir.glob("*.csv")):
         try:

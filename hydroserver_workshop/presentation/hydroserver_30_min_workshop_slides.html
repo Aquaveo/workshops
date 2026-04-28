@@ -186,29 +186,28 @@
 
     <section class="slide">
       <div class="content">
-        <span class="pill">HydroServerPy</span>
-        <h2>HydroServerPy Management Pattern</h2>
+        <span class="pill">Concepts</span>
+        <h2>HydroServer Data Model in Hydrology Terms</h2>
         <ul>
-          <li>Connect once with <strong>HydroServer(...)</strong>.</li>
-          <li>Use resource properties such as workspaces, things, datastreams, sensors, units, observed properties, data connections, and tasks.</li>
-          <li>Read collections with <strong>list(...)</strong> and access records with <strong>.items</strong>.</li>
-          <li>Use pagination, ordering, filtering, and <strong>fetch_all=True</strong> for larger collections.</li>
-          <li>Retrieve one object with <strong>get(uid=...)</strong>.</li>
-          <li>Create resources with <strong>create(...)</strong> when authenticated and authorized.</li>
+          <li><strong>Thing:</strong> station, gauge, river reach, forecast point, or monitored location.</li>
+          <li><strong>Observed property:</strong> water level, streamflow, rainfall, temperature, or forecast value.</li>
+          <li><strong>Sensor:</strong> instrument, model, satellite product, or data source.</li>
+          <li><strong>Unit:</strong> m, m3/s, mm, degC, or another standard measurement unit.</li>
+          <li><strong>Datastream:</strong> the time series connecting location, variable, method, unit, and observations.</li>
         </ul>
       </div>
     </section>
 
     <section class="slide">
       <div class="content">
-        <span class="pill">Concepts</span>
-        <h2>HydroServer Data Model in Hydrology Terms</h2>
+        <span class="pill">Notebook</span>
+        <h2>The Only Notebook Today</h2>
         <ul>
-          <li><strong>Thing:</strong> gauge, station, watershed outlet, forecast point, or monitored location.</li>
-          <li><strong>Observed property:</strong> streamflow, rainfall, water level, temperature, or forecast value.</li>
-          <li><strong>Sensor:</strong> instrument, model, data source, or processing workflow.</li>
-          <li><strong>Unit:</strong> m3/s, mm, m, degC, or another standard measurement unit.</li>
-          <li><strong>Datastream:</strong> the time series connecting location, variable, method, unit, and observations.</li>
+          <li>We will use <strong>quick_demo_data.ipynb</strong>.</li>
+          <li>The notebook runs as a single live workflow from connection through cleanup.</li>
+          <li>It uses five paired Uganda stations with both Hydroweb water level and GEOGLOWS streamflow files.</li>
+          <li>It is designed for Google Colab using files under <strong>/content/sample_data/</strong>.</li>
+          <li>The main station file is <strong>Uganda_Hydroweb_subset.csv</strong>.</li>
         </ul>
       </div>
     </section>
@@ -218,55 +217,57 @@
         <span class="pill">Setup</span>
         <h2>Workspace and Connection</h2>
         <ul>
-          <li>Workshop workspace: <strong>hydroserver_uganda_demo</strong>.</li>
-          <li>Anonymous mode is limited to public reads and local examples.</li>
-          <li>Use an API key when the facilitator has prepared one for the demo.</li>
-          <li>Use an API key when the facilitator wants authenticated access.</li>
-          <li>Find and reuse the already-created workspace before loading or publishing data.</li>
-          <li>Create the workspace programmatically only when the facilitator enables that optional fallback.</li>
+          <li>Demo workspace in the notebook: <strong>demo1</strong>.</li>
+          <li><strong>AUTH_METHOD = "password"</strong> is the live-demo path in the current notebook.</li>
+          <li><strong>AUTH_METHOD = "api_key"</strong> is still available if the facilitator switches to an API key.</li>
+          <li>Anonymous mode is limited to public reads and cannot create workspaces, metadata, datastreams, or observations.</li>
+          <li><strong>CREATE_WORKSPACE_IF_MISSING = True</strong> lets the notebook create the workspace when needed.</li>
         </ul>
       </div>
     </section>
 
     <section class="slide">
       <div class="content">
-        <span class="pill">Notebook Workflow</span>
-        <h2>Notebook Workflow</h2>
+        <span class="pill">Data</span>
+        <h2>Input Data</h2>
+        <ul>
+          <li>Station metadata comes from <strong>Uganda_Hydroweb_subset.csv</strong>.</li>
+          <li>Hydroweb files are expected under <strong>/content/sample_data/ts/hydroweb/</strong>.</li>
+          <li>GEOGLOWS files are expected under <strong>/content/sample_data/ts/geoglows/</strong>.</li>
+          <li>Hydroweb files are matched by station ID or <strong>COMID_v1</strong>.</li>
+          <li>GEOGLOWS files are matched by station ID or <strong>COMID_v2</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="content">
+        <span class="pill">Workflow</span>
+        <h2>Live Workflow</h2>
         <ol>
-          <li>Notebook 1: create things and required metadata.</li>
-          <li>Notebook 2: bulk station load with <strong>COMID_v1</strong> Hydroweb and <strong>COMID_v2</strong> GEOGLOWS files.</li>
-          <li>Notebook 3: short GEOGLOWS <strong>HTTPExtractor</strong> ETL example.</li>
-          <li>Notebook 4: short quality-control workflow.</li>
-          <li>Each notebook starts with setup and creation controls.</li>
-          <li>Each notebook ends with cleanup for disposable resources.</li>
+          <li>Connect to HydroServer.</li>
+          <li>Find or create the demo workspace.</li>
+          <li>Read the five-station subset catalog.</li>
+          <li>Create things, observed properties, units, sensors, processing level, and result qualifier.</li>
+          <li>Build two datastreams per station: Hydroweb water level and GEOGLOWS streamflow.</li>
+          <li>Upload observations with <strong>mode="replace"</strong>.</li>
+          <li>Verify one uploaded datastream.</li>
+          <li>Clean up created resources when the demo is finished.</li>
         </ol>
       </div>
     </section>
 
     <section class="slide">
       <div class="content">
-        <span class="pill">Optional Reference</span>
-        <h2>Optional Reference Layer</h2>
+        <span class="pill">Outputs</span>
+        <h2>What Participants Will See</h2>
         <ul>
-          <li>Resource-by-resource HydroServerPy examples are split into focused notebooks for follow-up learning.</li>
-          <li>hydroserverpy.etl shows an HTTPExtractor forecast example for the Aroca River GEOGLOWS point <strong>160180844</strong>.</li>
-          <li>HydroServerQualityControl examples show authenticated observation QC and gap detection.</li>
-          <li>These sections are optional during the live 40-minute workshop.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="slide">
-      <div class="content">
-        <span class="pill">Quality Control</span>
-        <h2>Quality Control and Forecast Readiness</h2>
-        <ul>
-          <li>Are timestamps parseable and in the expected order?</li>
-          <li>Are values missing at critical times?</li>
-          <li>Are units consistent across the table?</li>
-          <li>Do spikes or impossible values need review before warning workflows use the data?</li>
-          <li>Real Uganda station data makes these checks concrete: Hydroweb water level and GEOGLOWS streamflow when the two-column files are present.</li>
-          <li>HydroServer-backed QC can use <strong>HydroServerQualityControl.find_gaps(...)</strong> when a prepared datastream is available.</li>
+          <li>DataFrames showing metadata templates, loadable stations, workspace inventory, and upload summary.</li>
+          <li>UUIDs for created HydroServer resources.</li>
+          <li>One thing per station.</li>
+          <li>Two datastreams per station.</li>
+          <li>Normalized observation payloads with <strong>phenomenon_time</strong> and <strong>result</strong>.</li>
+          <li>Hydroweb rows and GEOGLOWS rows loaded into HydroServer.</li>
         </ul>
       </div>
     </section>
@@ -276,28 +277,26 @@
         <span class="pill">Live Write Safety</span>
         <h2>Safe Live Demonstration</h2>
         <ul>
-          <li>Anonymous read access is the default path for participants.</li>
-          <li>Finding the demo workspace uses API key authentication.</li>
-          <li>Workspace creation is optional and facilitator controlled.</li>
-          <li>The notebooks use local CSV data when credentials or network access are not available.</li>
-          <li>In Google Colab, upload <strong>data/</strong> under <strong>/content</strong> or set <strong>DATA_DIR_OVERRIDE</strong>.</li>
-          <li>The notebooks default to the 5-station <strong>data/subset/</strong> package for a lightweight demo.</li>
-          <li>Posting observations is optional and facilitator controlled.</li>
-          <li>Bulk station load creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station.</li>
-          <li>Live writes should only target disposable demo resources.</li>
+          <li>Live writes target disposable demo resources.</li>
+          <li><strong>DEMO_RUN_SUFFIX</strong> keeps resource names unique for each run.</li>
+          <li><strong>UPLOAD_MODE = "replace"</strong> keeps reruns from duplicating observations.</li>
+          <li>The cleanup section can preview deletion with <strong>dry_run=True</strong>.</li>
+          <li>The final cleanup can delete observations, datastreams, things, and metadata from the workspace.</li>
         </ul>
       </div>
     </section>
 
     <section class="slide">
       <div class="content">
-        <span class="pill">Optional</span>
-        <h2>Forecast Extension</h2>
+        <span class="pill">Timing</span>
+        <h2>Teaching Rhythm</h2>
         <ul>
-          <li>Forecast output can be reshaped into the same timestamp and value pattern.</li>
-          <li>Validation workflows compare forecast time series with observed data.</li>
-          <li>HydroServer can help make those inputs and outputs discoverable and reusable.</li>
-          <li>The optional notebook section uses <strong>HTTPExtractor</strong> with <strong>https://geoglows.ecmwf.int/api</strong> for Aroca River forecast ID <strong>160180844</strong>.</li>
+          <li>0-5 minutes: frame HydroServer and the data model.</li>
+          <li>5-10 minutes: open <strong>quick_demo_data.ipynb</strong>, install/import dependencies, and configure credentials.</li>
+          <li>10-18 minutes: connect and create or find the workspace.</li>
+          <li>18-28 minutes: inspect the station subset and create HydroServer metadata.</li>
+          <li>28-36 minutes: create datastreams and upload observations.</li>
+          <li>36-40 minutes: verify results and show cleanup.</li>
         </ul>
       </div>
     </section>
@@ -308,9 +307,9 @@
         <h2>What Participants Should Leave With</h2>
         <ul>
           <li>A mental model of how HydroServer stores hydrometeorological time series.</li>
-          <li>A runnable notebook for connecting, checking, plotting, and preparing data.</li>
-          <li>A safer way to discuss operational data sharing for multi-hazard early warning.</li>
-          <li>Pointers for extending the workflow into forecast validation.</li>
+          <li>A runnable notebook for creating metadata, datastreams, and observations.</li>
+          <li>A clear mapping between station metadata, source files, and HydroServer resources.</li>
+          <li>A safe pattern for live demos: unique resource names, upload summary tables, verification, and cleanup.</li>
         </ul>
       </div>
     </section>
@@ -320,13 +319,13 @@
         <img class="logo" src="../imgs/hydroserver_logo.png" alt="HydroServer logo">
         <div>
           <span class="pill">Next Steps</span>
-          <h2>Run the Notebooks</h2>
+          <h2>Run the Notebook</h2>
           <ul>
-            <li>Run each notebook's cells in order.</li>
+            <li>Run <strong>quick_demo_data.ipynb</strong> from top to bottom.</li>
             <li>Change only the marked configuration values.</li>
-            <li>Start with <strong>01_things_and_metadata.ipynb</strong>, then move through the numbered notebooks.</li>
-            <li>Keep live writes disabled unless credentials and a disposable demo workspace are provided.</li>
-            <li>Continue with HydroServer documentation and the optional forecast extension after the session.</li>
+            <li>Keep credentials local to the notebook session.</li>
+            <li>Use the upload summary and workspace inventory tables to explain what was created.</li>
+            <li>Run the cleanup section before ending the live demo.</li>
           </ul>
           <div class="footer">Use arrow keys, Page Down, or scroll to move through the deck.</div>
         </div>

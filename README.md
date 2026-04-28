@@ -10,16 +10,15 @@ Path: `hydroserver_workshop/`
 
 This workshop introduces HydroServer and HydroServerPy for managing hydrologic and meteorological time series data. It includes:
 
-- four Jupyter notebooks for metadata, bulk loading, ETL, and quality control
+- one Jupyter notebook, `quick_demo_data.ipynb`, for the live demo
 - bundled sample streamflow and forecast CSV files
-- real Uganda Hydroweb station metadata and per-station water-level CSV files
-- a 5-station `data/subset/` package for lightweight live demos
-- support for matching future two-column GEOGLOWS station CSV files
-- a bulk station loader that creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station
-- an HTTP-only GEOGLOWS forecast ETL example for the Aroca River point
+- a 5-station data package with paired Hydroweb and GEOGLOWS files
+- a live workflow that creates one thing with Hydroweb and GEOGLOWS datastreams per station
+- observation upload with `mode="replace"` and a verification cell
+- cleanup cells for disposable demo resources
 - a companion slide deck
 - validation scripts and tests
-- optional authenticated HydroServer write examples
+- authenticated HydroServer write examples
 
 Start with the workshop-specific README:
 
@@ -40,27 +39,18 @@ From the repository root:
 ```bash
 cd hydroserver_workshop
 python -m pip install -r requirements.txt
-jupyter notebook notebooks/
+jupyter notebook notebooks/quick_demo_data.ipynb
 ```
 
 ## Google Colab
 
-The notebooks resolve data paths for both local Jupyter and Google Colab. In Colab, use one of these layouts:
+The live notebook is configured for Google Colab-style paths. In Colab, stage the subset files like this:
 
-- upload the full `hydroserver_workshop/` folder under `/content`
-- upload the `data/` folder beside the notebook under `/content/data`
-- mount Google Drive and set `DATA_DIR_OVERRIDE` in the notebook to the mounted data folder
+- `/content/sample_data/Uganda_Hydroweb_subset.csv`
+- `/content/sample_data/ts/hydroweb/`
+- `/content/sample_data/ts/geoglows/`
 
-The expected station data folders are:
-
-```text
-hydroserver_workshop/data/hydroweb/
-hydroserver_workshop/data/geoglows/
-hydroserver_workshop/data/subset/hydroweb/
-hydroserver_workshop/data/subset/geoglows/
-```
-
-The notebooks default to `hydroserver_workshop/data/subset/`, which contains 5 paired Hydroweb/GEOGLOWS stations. Hydroweb files are named by station ID, such as `H-102549.csv`, with `Datetime` and `Water Level (m)` columns. GEOGLOWS files are one two-column CSV per station: timestamp/date and streamflow value.
+The repository data is in `hydroserver_workshop/data/`, which contains 5 paired Hydroweb/GEOGLOWS stations. Hydroweb files are named by station ID, such as `H-102549.csv`, with `Datetime` and `Water Level (m)` columns. GEOGLOWS files are one two-column CSV per station: timestamp/date and streamflow value.
 
 ## Validate Workshop Assets
 
@@ -72,4 +62,4 @@ pytest tests/test_workshop_assets.py
 
 ## Notes
 
-The HydroServer notebooks are safe by default: anonymous read mode is enabled, API keys are not stored in notebooks, and cleanup/delete operations require explicit facilitator configuration.
+The HydroServer notebook keeps credentials out of the repository. Live writes should target disposable demo resources, and the notebook includes cleanup cells for deleting created resources after the demo.
