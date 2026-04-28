@@ -88,7 +88,7 @@ def test_presentation_references_logo_and_quick_demo_flow():
 
     assert "../imgs/hydroserver_logo.png" in combined
     assert (ROOT / "imgs" / "hydroserver_logo.png").exists()
-    assert "HydroServer in 40 Minutes" in combined
+    assert "HydroServer on the fly" in combined
     assert "quick_demo_data.ipynb" in combined
     assert "The Only Notebook Today" in combined
     assert "demo1" in combined

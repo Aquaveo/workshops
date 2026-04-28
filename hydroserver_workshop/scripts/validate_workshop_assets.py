@@ -66,7 +66,7 @@ REQUIRED_NOTEBOOK_TITLES = [
 REQUIRED_PRESENTATION_PHRASES = [
     "Peer-to-Peer Technical Workshop",
     "HydroServer",
-    "40 Minutes",
+    "on the fly",
     "quick_demo_data.ipynb",
     "The Only Notebook Today",
     "demo1",
