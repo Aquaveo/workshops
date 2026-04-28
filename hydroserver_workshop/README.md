@@ -1,8 +1,8 @@
-# HydroServer 40-Minute Workshop
+# HydroServer Workshop
 
 Workshop: Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and Meteorological Data Systems for Multi-Hazard Early Warning Systems
 
-This folder contains a single live notebook for a 40-minute HydroServer demonstration. The notebook creates HydroServer metadata for five Uganda stations, creates Hydroweb and GEOGLOWS datastreams, uploads observations, verifies one upload, and shows how to clean up the demo resources.
+This folder contains a single live notebook for a HydroServer demonstration. The notebook creates HydroServer metadata for five Uganda stations, creates Hydroweb and GEOGLOWS datastreams, uploads observations, verifies one upload, and shows how to clean up the demo resources.
 
 ## What Participants Will Do
 
@@ -127,7 +127,7 @@ Open the companion presentation before starting the notebook:
 presentation/hydroserver_30_min_workshop_slides.html
 ```
 
-The slides are intended for the opening, transitions, and closing discussion. Use them to frame why HydroServer matters, orient participants to the single live notebook, and keep most of the 40-minute session hands-on. The editable slide source is available at `presentation/hydroserver_30_min_workshop_slides.md`.
+The slides are intended for the opening, transitions, and closing discussion. Use them to frame why HydroServer matters, orient participants to the single live notebook, and keep most of the session hands-on. The editable slide source is available at `presentation/hydroserver_30_min_workshop_slides.md`.
 
 ## Workspace and Credentials
 
@@ -144,7 +144,7 @@ DELETE_CREATED_RESOURCES_AT_END = True
 
 Keep credentials local to the notebook session and do not commit them to the repository.
 
-## 40-Minute Run Sheet
+## Run Sheet
 
 - 0-5 minutes: Use the slides to frame HydroServer and the data model.
 - 5-10 minutes: Open `quick_demo_data.ipynb`, install/import dependencies, and configure credentials.

@@ -116,8 +116,8 @@ def test_presentation_references_logo_and_quick_demo_flow():
 def test_readme_mentions_single_quick_demo_notebook():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
-    assert "HydroServer 40-Minute Workshop" in readme
-    assert "40-Minute Run Sheet" in readme
+    assert "HydroServer Workshop" in readme
+    assert "Run Sheet" in readme
     assert "quick_demo_data.ipynb" in readme
     assert "single live notebook" in readme
     assert "presentation/hydroserver_30_min_workshop_slides.html" in readme

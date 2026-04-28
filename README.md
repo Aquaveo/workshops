@@ -4,7 +4,7 @@ This repository contains workshop materials for hands-on technical training.
 
 ## Available Workshops
 
-### HydroServer 40-Minute Workshop
+### HydroServer Workshop
 
 Path: `hydroserver_workshop/`
 

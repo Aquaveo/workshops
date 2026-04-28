@@ -1,4 +1,4 @@
-# HydroServer in 40 Minutes
+# HydroServer on the fly
 
 ![HydroServer logo](../imgs/hydroserver_logo.png)
 
