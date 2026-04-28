@@ -93,6 +93,7 @@ Peer-to-Peer Technical Workshop Open Source and Interoperable Hydrological and M
 - Workspace creation is optional and facilitator controlled.
 - The notebooks use local CSV data when credentials or network access are not available.
 - In Google Colab, upload `data/` under `/content` or set `DATA_DIR_OVERRIDE`.
+- The notebooks default to the 5-station `data/subset/` package for a lightweight demo.
 - Posting observations is optional and facilitator controlled.
 - Bulk station load creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station.
 - Live writes should only target disposable demo resources.

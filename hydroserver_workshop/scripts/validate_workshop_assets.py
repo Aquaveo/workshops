@@ -20,20 +20,19 @@ EXPECTED_NOTEBOOKS = [
 EXPECTED_FILES = [
     ROOT / "README.md",
     ROOT / "requirements.txt",
-    ROOT / "data" / "Uganda_Hydroweb.csv",
-    ROOT / "data" / "uganda_selected_station.csv",
-    ROOT / "data" / "uganda_hydroweb_water_level_sample.csv",
-    ROOT / "data" / "uganda_geoglows_streamflow_sample.csv",
     ROOT / "data" / "sample_streamflow_observations.csv",
     ROOT / "data" / "sample_forecast_timeseries.csv",
+    ROOT / "data" / "subset" / "stations.csv",
+    ROOT / "data" / "subset" / "Uganda_Hydroweb_subset.csv",
+    ROOT / "data" / "subset" / "uganda_selected_station.csv",
     ROOT / "imgs" / "hydroserver_logo.png",
     ROOT / "presentation" / "hydroserver_30_min_workshop_slides.md",
     ROOT / "presentation" / "hydroserver_30_min_workshop_slides.html",
 ] + EXPECTED_NOTEBOOKS
 
 EXPECTED_DIRECTORIES = [
-    ROOT / "data" / "hydroweb",
-    ROOT / "data" / "geoglows",
+    ROOT / "data" / "subset" / "hydroweb",
+    ROOT / "data" / "subset" / "geoglows",
 ]
 
 REQUIRED_NOTEBOOK_PHRASES = [
@@ -41,6 +40,8 @@ REQUIRED_NOTEBOOK_PHRASES = [
     "AUTH_METHOD",
     "Google Colab",
     "DATA_DIR",
+    "USE_DATA_SUBSET",
+    "SUBSET_DATA_DIR",
     "Uganda_Hydroweb.csv",
     "COMID_v1",
     "COMID_v2",
@@ -127,21 +128,7 @@ def collect_errors() -> list[str]:
         errors.extend(f"Missing expected directory: {path.relative_to(ROOT)}" for path in missing_directories)
         return errors
 
-    errors.extend(_validate_station_catalog())
-    errors.extend(_validate_hydroweb_files())
-    errors.extend(_validate_geoglows_files())
-    errors.extend(
-        _validate_csv(
-            ROOT / "data" / "uganda_hydroweb_water_level_sample.csv",
-            {"phenomenon_time", "result", "source", "source_identifier", "station_id", "observed_property", "unit"},
-        )
-    )
-    errors.extend(
-        _validate_csv(
-            ROOT / "data" / "uganda_geoglows_streamflow_sample.csv",
-            {"phenomenon_time", "result", "source", "source_identifier", "station_id", "observed_property", "unit"},
-        )
-    )
+    errors.extend(_validate_subset_files())
     errors.extend(_validate_csv(ROOT / "data" / "sample_streamflow_observations.csv", {"timestamp", "value"}))
     errors.extend(
         _validate_csv(
@@ -154,8 +141,21 @@ def collect_errors() -> list[str]:
     return errors
 
 
-def _validate_station_catalog() -> list[str]:
+def _validate_subset_files() -> list[str]:
     errors: list[str] = []
+    subset_dir = ROOT / "data" / "subset"
+    subset_catalog_path = subset_dir / "stations.csv"
+    hydroweb_dir = subset_dir / "hydroweb"
+    geoglows_dir = subset_dir / "geoglows"
+
+    try:
+        subset = pd.read_csv(subset_catalog_path)
+    except Exception as exc:  # pragma: no cover - defensive validation
+        return [f"Could not read {subset_catalog_path.relative_to(ROOT)}: {exc}"]
+
+    if len(subset) != 5:
+        errors.append("data/subset/stations.csv should contain exactly 5 stations")
+
     required_columns = {
         "ID",
         "Name",
@@ -167,59 +167,27 @@ def _validate_station_catalog() -> list[str]:
         "COMID_v1",
         "COMID_v2",
         "Status",
+        "hydroweb_file",
+        "geoglows_file",
     }
-    catalog_path = ROOT / "data" / "Uganda_Hydroweb.csv"
-    selected_path = ROOT / "data" / "uganda_selected_station.csv"
-
-    try:
-        catalog = pd.read_csv(catalog_path)
-        selected = pd.read_csv(selected_path)
-    except Exception as exc:  # pragma: no cover - defensive validation
-        return [f"Could not read station catalog files: {exc}"]
-
-    missing_columns = sorted(required_columns.difference(catalog.columns))
+    missing_columns = sorted(required_columns.difference(subset.columns))
     if missing_columns:
-        errors.append(f"{catalog_path.relative_to(ROOT)} missing columns: {', '.join(missing_columns)}")
-
-    if len(selected) != 1:
-        errors.append(f"{selected_path.relative_to(ROOT)} should contain exactly one selected station")
+        errors.append(f"data/subset/stations.csv missing columns: {', '.join(missing_columns)}")
         return errors
 
-    station = selected.iloc[0]
-    if station["ID"] not in set(catalog["ID"]):
-        errors.append(f"Selected station {station['ID']} is not present in Uganda_Hydroweb.csv")
+    for _, station in subset.iterrows():
+        hydroweb_file = hydroweb_dir / str(station["hydroweb_file"])
+        geoglows_file = geoglows_dir / str(station["geoglows_file"])
+        if not hydroweb_file.exists():
+            errors.append(f"Missing subset Hydroweb file: {hydroweb_file.relative_to(ROOT)}")
+        if not geoglows_file.exists():
+            errors.append(f"Missing subset GEOGLOWS file: {geoglows_file.relative_to(ROOT)}")
+        if pd.isna(station["COMID_v1"]) or int(station["COMID_v1"]) == 0:
+            errors.append(f"Subset station {station['ID']} must have a nonzero COMID_v1")
+        if pd.isna(station["COMID_v2"]) or int(station["COMID_v2"]) == 0:
+            errors.append(f"Subset station {station['ID']} must have a nonzero COMID_v2")
 
-    for column in ["COMID_v1", "COMID_v2"]:
-        if pd.isna(station[column]) or int(station[column]) == 0:
-            errors.append(f"Selected station must have a nonzero {column}")
-
-    usable = catalog[(catalog["COMID_v1"].fillna(0).astype(int) != 0) & (catalog["COMID_v2"].fillna(0).astype(int) != 0)]
-    if usable.empty:
-        errors.append("Uganda_Hydroweb.csv should contain at least one station with both COMIDs")
-
-    return errors
-
-
-def _validate_hydroweb_files() -> list[str]:
-    errors: list[str] = []
-    hydroweb_dir = ROOT / "data" / "hydroweb"
-    station_catalog = pd.read_csv(ROOT / "data" / "Uganda_Hydroweb.csv")
-    station_ids = set(station_catalog["ID"])
-    files = sorted(hydroweb_dir.glob("*.csv"))
-
-    if not files:
-        return ["data/hydroweb should contain per-station Hydroweb CSV files"]
-
-    matched_ids = {path.stem for path in files}.intersection(station_ids)
-    if not matched_ids:
-        errors.append("No Hydroweb CSV filenames match station IDs from Uganda_Hydroweb.csv")
-
-    selected = pd.read_csv(ROOT / "data" / "uganda_selected_station.csv").iloc[0]
-    selected_path = hydroweb_dir / f"{selected['ID']}.csv"
-    if not selected_path.exists():
-        errors.append(f"Missing Hydroweb CSV for selected station: data/hydroweb/{selected['ID']}.csv")
-
-    for path in files[:5]:
+    for path in sorted(hydroweb_dir.glob("*.csv")):
         try:
             frame = pd.read_csv(path, nrows=5)
         except Exception as exc:  # pragma: no cover - defensive validation
@@ -232,15 +200,7 @@ def _validate_hydroweb_files() -> list[str]:
         if "Water Level (m)" in frame.columns and pd.to_numeric(frame["Water Level (m)"], errors="coerce").isna().any():
             errors.append(f"{path.relative_to(ROOT)} contains non-numeric water levels")
 
-    return errors
-
-
-def _validate_geoglows_files() -> list[str]:
-    errors: list[str] = []
-    geoglows_dir = ROOT / "data" / "geoglows"
-    files = sorted(geoglows_dir.glob("*.csv"))
-
-    for path in files[:5]:
+    for path in sorted(geoglows_dir.glob("*.csv")):
         try:
             frame = pd.read_csv(path, nrows=5)
         except Exception as exc:  # pragma: no cover - defensive validation

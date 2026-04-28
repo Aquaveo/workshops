@@ -20,4 +20,6 @@ env/
 Thumbs.db
 *.swp
 *.swo
-hydroserver_workshop/data
+# hydroserver_workshop/data/*
+# !hydroserver_workshop/data/subset/
+# !hydroserver_workshop/data/subset/**

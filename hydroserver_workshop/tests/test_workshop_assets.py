@@ -47,57 +47,64 @@ def test_forecast_sample_has_required_forecast_fields():
     assert pd.to_datetime(frame["timestamp"], utc=True, errors="coerce").notna().all()
 
 
-def test_uganda_hydroweb_station_catalog_and_files_are_usable():
-    catalog = pd.read_csv(ROOT / "data" / "Uganda_Hydroweb.csv")
-    selected = pd.read_csv(ROOT / "data" / "uganda_selected_station.csv")
-    hydroweb_files = {path.stem for path in (ROOT / "data" / "hydroweb").glob("*.csv")}
+def test_subset_station_catalog_and_files_are_usable():
+    subset_dir = ROOT / "data" / "subset"
+    catalog = pd.read_csv(subset_dir / "stations.csv")
+    selected = pd.read_csv(subset_dir / "uganda_selected_station.csv")
+    hydroweb_files = {path.name for path in (subset_dir / "hydroweb").glob("*.csv")}
+    geoglows_files = {path.name for path in (subset_dir / "geoglows").glob("*.csv")}
 
     assert len(selected) == 1
     station = selected.iloc[0]
     assert station["ID"] in set(catalog["ID"])
-    assert station["ID"] in hydroweb_files
+    station_row = catalog[catalog["ID"] == station["ID"]].iloc[0]
+    assert station_row["hydroweb_file"] in hydroweb_files
+    assert station_row["geoglows_file"] in geoglows_files
     assert int(station["COMID_v1"]) != 0
     assert int(station["COMID_v2"]) != 0
     assert ((catalog["COMID_v1"] != 0) & (catalog["COMID_v2"] != 0)).any()
 
 
 def test_hydroweb_station_csv_and_normalized_payload_shape():
-    selected = pd.read_csv(ROOT / "data" / "uganda_selected_station.csv").iloc[0]
-    raw = pd.read_csv(ROOT / "data" / "hydroweb" / f"{selected['ID']}.csv")
-    normalized = pd.read_csv(ROOT / "data" / "uganda_hydroweb_water_level_sample.csv")
-    geoglows_sample = pd.read_csv(ROOT / "data" / "uganda_geoglows_streamflow_sample.csv")
+    subset_dir = ROOT / "data" / "subset"
+    selected = pd.read_csv(subset_dir / "uganda_selected_station.csv").iloc[0]
+    station_id = selected["ID"]
+    station = pd.read_csv(subset_dir / "stations.csv").query("ID == @station_id").iloc[0]
+    raw = pd.read_csv(subset_dir / "hydroweb" / station["hydroweb_file"])
+    geoglows_raw = pd.read_csv(subset_dir / "geoglows" / station["geoglows_file"])
 
     assert list(raw.columns) == ["Datetime", "Water Level (m)"]
     assert pd.to_datetime(raw["Datetime"], utc=True, errors="coerce").notna().all()
     assert pd.to_numeric(raw["Water Level (m)"], errors="coerce").notna().all()
-    assert {
-        "phenomenon_time",
-        "result",
-        "source",
-        "source_identifier",
-        "station_id",
-        "observed_property",
-        "unit",
-    }.issubset(normalized.columns)
-    assert set(normalized["station_id"]) == {selected["ID"]}
-    assert set(normalized["observed_property"]) == {"Water Level"}
-    assert set(normalized["unit"]) == {"m"}
-    assert set(geoglows_sample["station_id"]) == {selected["ID"]}
-    assert set(geoglows_sample["observed_property"]) == {"Streamflow"}
-    assert set(geoglows_sample["unit"]) == {"m3/s"}
-    assert pd.to_datetime(geoglows_sample["phenomenon_time"], utc=True, errors="coerce").notna().all()
-    assert pd.to_numeric(geoglows_sample["result"], errors="coerce").notna().all()
+    assert len(geoglows_raw.columns) == 2
+    timestamp_column, value_column = geoglows_raw.columns
+    assert pd.to_datetime(geoglows_raw[timestamp_column], utc=True, errors="coerce").notna().all()
+    assert pd.to_numeric(geoglows_raw[value_column], errors="coerce").notna().all()
 
 
-def test_geoglows_directory_accepts_two_column_station_csvs_when_present():
-    geoglows_files = sorted((ROOT / "data" / "geoglows").glob("*.csv"))
+def test_subset_geoglows_directory_accepts_two_column_station_csvs():
+    geoglows_files = sorted((ROOT / "data" / "subset" / "geoglows").glob("*.csv"))
 
-    for path in geoglows_files[:5]:
+    assert len(geoglows_files) == 5
+    for path in geoglows_files:
         frame = pd.read_csv(path)
         assert len(frame.columns) == 2
         timestamp_column, value_column = frame.columns
         assert pd.to_datetime(frame[timestamp_column], utc=True, errors="coerce").notna().all()
         assert pd.to_numeric(frame[value_column], errors="coerce").notna().all()
+
+
+def test_subset_contains_five_paired_stations():
+    subset_dir = ROOT / "data" / "subset"
+    stations = pd.read_csv(subset_dir / "stations.csv")
+
+    assert len(stations) == 5
+    assert {"ID", "COMID_v1", "COMID_v2", "hydroweb_file", "geoglows_file"}.issubset(stations.columns)
+    for _, station in stations.iterrows():
+        assert (subset_dir / "hydroweb" / station["hydroweb_file"]).exists()
+        assert (subset_dir / "geoglows" / station["geoglows_file"]).exists()
+        assert int(station["COMID_v1"]) != 0
+        assert int(station["COMID_v2"]) != 0
 
 
 def test_presentation_references_logo_and_notebook_flow():
@@ -146,6 +153,7 @@ def test_readme_mentions_companion_presentation():
     assert "presentation/hydroserver_30_min_workshop_slides.md" in readme
     assert "Google Colab" in readme
     assert "DATA_DIR" in readme
+    assert "data/subset" in readme
     assert "data/hydroweb" in readme
     assert "data/geoglows" in readme
 
@@ -198,6 +206,9 @@ def test_split_notebooks_cover_requested_workflows():
         "bulk_station_load_plan",
         "eligible_stations",
         "MAX_STATIONS_TO_LOAD = None",
+        "USE_DATA_SUBSET = True",
+        "SUBSET_DATA_DIR",
+        "Using subset data",
         "normalize_hydroweb_water_level",
         "normalize_two_column_geoglows",
     ]:

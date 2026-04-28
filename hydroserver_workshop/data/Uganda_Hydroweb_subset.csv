@@ -1,0 +1,6 @@
+ID,Name,Basin,River,Latitude,Longitude,Elevation,Ellipsoid,Slope (m/m),Missions,state,country_name,country,COMID_v1,Region,COMID_v2,VPU,Status,hydroweb_file,geoglows_file
+H-102549,Nile_achwa_km5268,Nile,Achwa,2.5291,32.996,993.77,WGS84,0.0,S3A,Lira,Uganda,UG,7068385,africa,160214697,122,Operational,H-102549.csv,160214697.csv
+H-107870,Nile_akagera_km6130,Nile,Akagera,-0.95,31.7579,1136.6,WGS84,2.8e-05,S3B,Rakai,Uganda,UG,7073854,africa,160220651,122,Operational,H-107870.csv,160220651.csv
+H-0000000007850,Nile_akagera_km6148,Nile,Akagera,-0.9938,31.7021,1137.65,WGS84,0.0,S3A,Rakai,Uganda,UG,7073854,africa,160214812,122,Operational,H-0000000007850.csv,160214812.csv
+H-101620,Nile_akokoro_km5900,Nile,Akokoro,1.8905,33.8685,1051.19,WGS84,0.0,S3A,Katakwi,Uganda,UG,7069648,africa,160214717,122,Operational,H-101620.csv,160214717.csv
+H-100136,Nile_kafu_km5582,Nile,Kafu,1.5789,32.0676,1034.8,WGS84,0.0,S3A,Nakasongola,Uganda,UG,7070059,africa,160207720,122,Operational,H-100136.csv,160207720.csv

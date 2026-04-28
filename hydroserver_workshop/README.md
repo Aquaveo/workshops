@@ -36,6 +36,16 @@ hydroserver_workshop/
     uganda_selected_station.csv
     uganda_hydroweb_water_level_sample.csv
     uganda_geoglows_streamflow_sample.csv
+    subset/
+      stations.csv
+      Uganda_Hydroweb_subset.csv
+      uganda_selected_station.csv
+      hydroweb/
+        H-102549.csv
+        ...
+      geoglows/
+        160214697.csv
+        ...
     hydroweb/
       H-104255.csv
       ...
@@ -87,11 +97,20 @@ The shorter ETL and quality-control notebooks serve as optional reference sectio
 
 ## Real Uganda Station Data
 
-The real-data path starts with `data/Uganda_Hydroweb.csv`. The selected station is stored in `data/uganda_selected_station.csv`.
+The full real-data catalog is `data/Uganda_Hydroweb.csv`. For the live workshop, the notebooks default to the smaller `data/subset/` package, which contains 5 stations that have both Hydroweb and GEOGLOWS files.
+
+The subset catalog is:
+
+```text
+data/subset/stations.csv
+```
+
+Each row includes the station metadata plus the matching `hydroweb_file` and `geoglows_file` names. The selected subset station is stored in `data/subset/uganda_selected_station.csv`.
 
 Hydroweb files are stored in:
 
 ```text
+data/subset/hydroweb/
 data/hydroweb/
 ```
 
@@ -104,6 +123,7 @@ Datetime,Water Level (m)
 GEOGLOWS files should be stored in:
 
 ```text
+data/subset/geoglows/
 data/geoglows/
 ```
 

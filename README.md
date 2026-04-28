@@ -13,6 +13,7 @@ This workshop introduces HydroServer and HydroServerPy for managing hydrologic a
 - four Jupyter notebooks for metadata, bulk loading, ETL, and quality control
 - bundled sample streamflow and forecast CSV files
 - real Uganda Hydroweb station metadata and per-station water-level CSV files
+- a 5-station `data/subset/` package for lightweight live demos
 - support for matching future two-column GEOGLOWS station CSV files
 - a bulk station loader that creates one thing with Hydroweb and GEOGLOWS datastreams per eligible station
 - an HTTP-only GEOGLOWS forecast ETL example for the Aroca River point
@@ -55,9 +56,11 @@ The expected station data folders are:
 ```text
 hydroserver_workshop/data/hydroweb/
 hydroserver_workshop/data/geoglows/
+hydroserver_workshop/data/subset/hydroweb/
+hydroserver_workshop/data/subset/geoglows/
 ```
 
-Hydroweb files are named by station ID, such as `H-104255.csv`, with `Datetime` and `Water Level (m)` columns. GEOGLOWS files should be one two-column CSV per station: timestamp/date and streamflow value.
+The notebooks default to `hydroserver_workshop/data/subset/`, which contains 5 paired Hydroweb/GEOGLOWS stations. Hydroweb files are named by station ID, such as `H-102549.csv`, with `Datetime` and `Water Level (m)` columns. GEOGLOWS files are one two-column CSV per station: timestamp/date and streamflow value.
 
 ## Validate Workshop Assets
 
